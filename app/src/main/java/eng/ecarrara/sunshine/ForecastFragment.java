@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -37,6 +40,8 @@ public class ForecastFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
+        this.setHasOptionsMenu(true);
+
         final String[] mockWeatherData = {
                 "Today - Sunny  - 88/63",
                 "Tomorrow - Cloudy - 70/90",
@@ -55,6 +60,22 @@ public class ForecastFragment extends Fragment {
         weatherListView.setAdapter(weatherDataAdapter);
 
         return rootView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.forecast_fragment, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.action_refresh) {
+            FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
+            fetchWeatherTask.execute();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
