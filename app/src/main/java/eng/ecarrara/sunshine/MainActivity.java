@@ -8,6 +8,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,6 +72,13 @@ public class MainActivity extends ActionBarActivity {
             };
 
             List<String> weatherData = new ArrayList<String>(Arrays.asList(mockWeatherData));
+
+            ArrayAdapter<String> weatherDataAdapter = new ArrayAdapter<String>(getActivity(),
+                    R.layout.list_item_forecast, R.id.list_item_forecast_textview, weatherData);
+
+            ListView weatherListView = (ListView) rootView.findViewById(R.id.listview_forecast);
+            weatherListView.setAdapter(weatherDataAdapter);
+
 
             return rootView;
         }
