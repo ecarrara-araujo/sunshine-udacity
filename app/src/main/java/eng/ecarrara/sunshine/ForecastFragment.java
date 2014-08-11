@@ -4,6 +4,7 @@ package eng.ecarrara.sunshine;
  * Created by ecarrara on 7/30/2014.
  */
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -67,6 +69,15 @@ public class ForecastFragment extends Fragment {
 
         ListView weatherListView = (ListView) rootView.findViewById(R.id.listview_forecast);
         weatherListView.setAdapter(mWeatherDataAdapter);
+        weatherListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String forecast = mWeatherDataAdapter.getItem(position);
+                Intent detailsIntent = new Intent(getActivity(), DetailActivity.class);
+                detailsIntent.putExtra(Intent.EXTRA_TEXT, forecast);
+                startActivity(detailsIntent);
+            }
+        });
 
         return rootView;
     }
