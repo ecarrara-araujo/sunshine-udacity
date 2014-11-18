@@ -7,8 +7,25 @@
     <string name="action_refresh">Refresh</string>
     <string name="title_activity_detail">DetailActivity</string>
     <string name="title_activity_settings">SettingsActivity</string>
+    <string name="temperature_unit_metric">Metric</string>
+    <string name="temperature_unit_imperial">Imperial</string>
+
+    <!-- Preferences -->
     <string name="pref_location_label">Location</string>
     <string name="pref_location_key" translatable="false">location</string>
     <string name="pref_location_default" translatable="false">94043</string> <!-- 94043 - Mountain View -->
 
+    <string name="pref_temperature_unit_label">Pick Your Units</string>
+    <string name="pref_temperature_unit_key" translatable="false">temperature_unit</string>
+    <string name="pref_temperature_unit_default">@string/pref_temperature_unit_value_metric</string>
+    <string name="pref_temperature_unit_value_metric" translatable="false">metric</string>
+    <string name="pref_temperature_unit_value_imperial" translatable="false">imperial</string>
+    <string-array name="pref_temperature_units_entries">
+        <item>@string/temperature_unit_metric</item>
+        <item>@string/temperature_unit_imperial</item>
+    </string-array>
+    <string-array name="pref_temperature_unit_values">
+        <item>@string/pref_temperature_unit_value_metric</item>
+        <item>@string/pref_temperature_unit_value_imperial</item>
+    </string-array>
 </resources>

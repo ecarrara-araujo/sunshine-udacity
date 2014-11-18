@@ -186,7 +186,7 @@ public class ForecastFragment extends Fragment {
                 periodFormattedForecast = getWeatherDataFromJson(forecastJsonStr, period);
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
-                // If the code didn't successfully get the weather data, there's no point in attemping
+                // If the code didn't successfully get the weather data, there's no point in attempting
                 // to parse it.
                 periodFormattedForecast = null;
             } catch (JSONException jsonex) {
@@ -220,12 +220,46 @@ public class ForecastFragment extends Fragment {
         }
 
         /**
+         * Converts the temperature in celsius (metric) to fahrenheit (imperial)
+         * @param temperature
+         * @return
+         */
+        private double convertTemperatureFromMetricToImperial(double temperature) {
+            double imperialTemp = (temperature * 9) / 5 + 32;
+            return imperialTemp;
+        }
+
+        /**
+         * Check the current user preference for temperature units and make the conversion
+         * We are assuming that the server data is always fetch on Metric format, so we only do
+         * the conversion for Imperial units.
+         * @param temperature
+         * @return
+         */
+        private double convertAccordingToPreferences(double temperature) {
+            double convertedTemperature = temperature;
+            String temperatureFormat = PreferenceManager.getDefaultSharedPreferences(getActivity())
+                    .getString(getString(R.string.pref_temperature_unit_key),
+                               getString(R.string.pref_temperature_unit_default));
+
+            if(getString(R.string.pref_temperature_unit_value_imperial)
+                    .equals(temperatureFormat)) {
+                convertedTemperature = convertTemperatureFromMetricToImperial(temperature);
+            }
+
+            return convertedTemperature;
+        }
+
+        /**
          * Prepare the weather high/lows for presentation.
          */
         private String formatHighLows(double high, double low) {
+            double convertedHigh = convertAccordingToPreferences(high);
+            double convertedLow = convertAccordingToPreferences(low);
+
             // For presentation, assume the user doesn't care about tenths of a degree.
-            long roundedHigh = Math.round(high);
-            long roundedLow = Math.round(low);
+            long roundedHigh = Math.round(convertedHigh);
+            long roundedLow = Math.round(convertedLow);
 
             String highLowStr = roundedHigh + "/" + roundedLow;
             return highLowStr;
