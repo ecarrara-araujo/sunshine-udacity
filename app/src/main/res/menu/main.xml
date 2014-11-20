@@ -11,4 +11,5 @@
         android:title="@string/action_preferred_location"
         android:orderInCategory="200"
         app:showAsAction="never" />
+
 </menu>

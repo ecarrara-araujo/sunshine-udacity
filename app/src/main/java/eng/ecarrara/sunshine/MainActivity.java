@@ -46,7 +46,7 @@ public class MainActivity extends ActionBarActivity {
                     .authority("0,0")
                     .appendQueryParameter("q", PreferenceManager.getDefaultSharedPreferences(this)
                             .getString(getString(R.string.pref_location_key),
-                                       getString(R.string.pref_location_default)))
+                                    getString(R.string.pref_location_default)))
                     .build();
 
             Intent mapIntent = new Intent(Intent.ACTION_VIEW);
