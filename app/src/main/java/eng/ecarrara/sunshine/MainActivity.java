@@ -1,7 +1,9 @@
 package eng.ecarrara.sunshine;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,6 +40,21 @@ public class MainActivity extends ActionBarActivity {
             Intent settingsIntent = new Intent(this, SettingsActivity.class);
             startActivity(settingsIntent);
             return true;
+        } else if(id == R.id.action_preferred_location) {
+            Uri geoLocation = (new Uri.Builder())
+                    .scheme("geo")
+                    .authority("0,0")
+                    .appendQueryParameter("q", PreferenceManager.getDefaultSharedPreferences(this)
+                            .getString(getString(R.string.pref_location_key),
+                                       getString(R.string.pref_location_default)))
+                    .build();
+
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW);
+            mapIntent.setData(geoLocation);
+            if(mapIntent.resolveActivity(getPackageManager()) != null){
+                startActivity(mapIntent);
+            }
+
         }
         return super.onOptionsItemSelected(item);
     }
