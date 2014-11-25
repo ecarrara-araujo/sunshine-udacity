@@ -19,6 +19,8 @@ import eng.ecarrara.sunshine.data.WeatherContract.WeatherEntry;
 public class TestDb extends AndroidTestCase {
 
     public static final String LOG_TAG = TestDb.class.getSimpleName();
+    static final String TEST_LOCATION = "99705";
+    static final String TEST_DATE = "20141205";
 
     public void testCreateDb() throws Throwable {
         mContext.deleteDatabase(WeatherDbHelper.DATABASE_NAME);
@@ -57,7 +59,7 @@ public class TestDb extends AndroidTestCase {
                 null // sort order
         );
 
-        validateCursor(cursor, values);
+            validateCursor(cursor, values);
 
         // Fantastic.  Now that we have a location, add some weather!
         // Weather Test data
@@ -87,7 +89,7 @@ public class TestDb extends AndroidTestCase {
     static ContentValues createWeatherValues(long locationRowId) {
         ContentValues weatherValues = new ContentValues();
         weatherValues.put(WeatherEntry.COLUMN_LOC_KEY, locationRowId);
-        weatherValues.put(WeatherEntry.COLUMN_DATETEXT, "20141205");
+        weatherValues.put(WeatherEntry.COLUMN_DATETEXT, TEST_DATE);
         weatherValues.put(WeatherEntry.COLUMN_DEGREES, 1.1);
         weatherValues.put(WeatherEntry.COLUMN_HUMIDITY, 1.2);
         weatherValues.put(WeatherEntry.COLUMN_PRESSURE, 1.3);
@@ -103,7 +105,7 @@ public class TestDb extends AndroidTestCase {
 
     static ContentValues createNorthPoleLocationValues() {
         ContentValues locationValues = new ContentValues();
-        locationValues.put(LocationEntry.COLUMN_LOCATION_SETTING, "99705");
+        locationValues.put(LocationEntry.COLUMN_LOCATION_SETTING, TEST_LOCATION);
         locationValues.put(LocationEntry.COLUMN_CITY_NAME, "North Pole");
         locationValues.put(LocationEntry.COLUMN_COORD_LAT, 64.7488);
         locationValues.put(LocationEntry.COLUMN_COORD_LONG, -147.353);
