@@ -141,7 +141,30 @@ public class WeatherProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        return null;
+        final int uriMatched = sUriMatcher.match(uri);
+        long _id = -1;
+        Uri returnUri;
+        switch (uriMatched) {
+            case WEATHER:
+                _id = mDatabaseOpenHelper.getWritableDatabase().insert(
+                        WeatherContract.WeatherEntry.TABLE_NAME, null, values);
+                returnUri = WeatherContract.WeatherEntry.buildWeatherUri(_id);
+                break;
+            case LOCATION:
+                _id = mDatabaseOpenHelper.getWritableDatabase().insert(
+                        WeatherContract.LocationEntry.TABLE_NAME, null, values);
+                returnUri = WeatherContract.LocationEntry.buildLocationUri(_id);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown URI:" + uri);
+        }
+
+        if(_id < 0) {
+            throw new android.database.SQLException("Failed to insert row into " + uri);
+        }
+
+        getContext().getContentResolver().notifyChange(uri, null);
+        return returnUri;
     }
 
     @Override

@@ -1,9 +1,11 @@
 package eng.ecarrara.sunshine;
 
 import android.annotation.TargetApi;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Build;
 import android.test.AndroidTestCase;
 import android.util.Log;
@@ -28,16 +30,11 @@ public class TestProvider extends AndroidTestCase {
 
     public void testInsertReadDb() {
 
-        //Test Data
-
-        // If there's an error in those massive SQL table creation Strings,
-        // errors will be thrown here when you try to get a writable database.
-        WeatherDbHelper dbHelper = new WeatherDbHelper(mContext);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
         // Create a new map of locationValues, where column names are the keys
         ContentValues locationValues = TestDb.createNorthPoleLocationValues();
-        long locationRowId = db.insert(LocationEntry.TABLE_NAME, null, locationValues);
+        Uri newLocationUri = mContext.getContentResolver().insert(LocationEntry.CONTENT_URI,
+                locationValues);
+        long locationRowId = ContentUris.parseId(newLocationUri);
 
         // Verify we got a row back.
         assertTrue(locationRowId != -1);
@@ -69,7 +66,9 @@ public class TestProvider extends AndroidTestCase {
         // Fantastic.  Now that we have a location, add some weather!
         // Weather Test data
         ContentValues weatherValues = TestDb.createWeatherValues(locationRowId);
-        long weatherRowId = db.insert(WeatherEntry.TABLE_NAME, null, weatherValues);
+        Uri newWeatherUri = mContext.getContentResolver().insert(WeatherEntry.CONTENT_URI,
+                weatherValues);
+        long weatherRowId = ContentUris.parseId(newWeatherUri);
 
         // Verification
         assertTrue(weatherRowId != -1);
@@ -111,7 +110,6 @@ public class TestProvider extends AndroidTestCase {
                 null);
 
         cursor.close();
-        dbHelper.close();
     }
 
     public void testGetType() throws Throwable {
