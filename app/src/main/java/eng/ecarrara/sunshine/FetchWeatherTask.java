@@ -6,9 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,26 +28,14 @@ import eng.ecarrara.sunshine.data.WeatherContract.WeatherEntry;
 /**
  * Created by ecarrara on 26/11/2014.
  */
-public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
+public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
 
     private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
 
     private Context mContext;
-    private ArrayAdapter<String> mForecastAdapter;
 
-    public FetchWeatherTask(Context context, ArrayAdapter<String> forecastAdapter) {
+    public FetchWeatherTask(Context context) {
         mContext = context;
-        mForecastAdapter = forecastAdapter;
-    }
-
-    @Override
-    protected void onPostExecute(String[] strings) {
-        if(strings != null) {
-            mForecastAdapter.clear();
-            for(String dayForecastStr : strings) {
-                mForecastAdapter.add(dayForecastStr);
-            }
-        }
     }
 
     private long addLocation(String locationSetting, String cityName, double lat, double lon) {
@@ -85,7 +71,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
     }
 
     @Override
-    protected String[] doInBackground(String... params) {
+    protected Void doInBackground(String... params) {
 
         if (params.length <= 0) {
             Log.e(LOG_TAG, "Missing parameters: Location");
@@ -151,15 +137,10 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
                 return null;
             }
             forecastJsonStr = buffer.toString();
-            periodFormattedForecast = getWeatherDataFromJson(forecastJsonStr, period, location);
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
             // If the code didn't successfully get the weather data, there's no point in attempting
             // to parse it.
-            periodFormattedForecast = null;
-        } catch (JSONException jsonex) {
-            Log.e(LOG_TAG, jsonex.toString());
-            periodFormattedForecast = null;
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -173,7 +154,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
             }
         }
 
-        return periodFormattedForecast;
+        return null;
     }
 
     /* The date/time conversion code is going to be moved outside the asynctask later,
@@ -188,59 +169,13 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
     }
 
     /**
-     * Converts the temperature in celsius (metric) to fahrenheit (imperial)
-     * @param temperature
-     * @return
-     */
-    private double convertTemperatureFromMetricToImperial(double temperature) {
-        double imperialTemp = (temperature * 9) / 5 + 32;
-        return imperialTemp;
-    }
-
-    /**
-     * Check the current user preference for temperature units and make the conversion
-     * We are assuming that the server data is always fetch on Metric format, so we only do
-     * the conversion for Imperial units.
-     * @param temperature
-     * @return
-     */
-    private double convertAccordingToPreferences(double temperature) {
-        double convertedTemperature = temperature;
-        String temperatureFormat = PreferenceManager.getDefaultSharedPreferences(mContext)
-                .getString(mContext.getString(R.string.pref_temperature_unit_key),
-                        mContext.getString(R.string.pref_temperature_unit_default));
-
-        if(mContext.getString(R.string.pref_temperature_unit_value_imperial)
-                .equals(temperatureFormat)) {
-            convertedTemperature = convertTemperatureFromMetricToImperial(temperature);
-        }
-
-        return convertedTemperature;
-    }
-
-    /**
-     * Prepare the weather high/lows for presentation.
-     */
-    private String formatHighLows(double high, double low) {
-        double convertedHigh = convertAccordingToPreferences(high);
-        double convertedLow = convertAccordingToPreferences(low);
-
-        // For presentation, assume the user doesn't care about tenths of a degree.
-        long roundedHigh = Math.round(convertedHigh);
-        long roundedLow = Math.round(convertedLow);
-
-        String highLowStr = roundedHigh + "/" + roundedLow;
-        return highLowStr;
-    }
-
-    /**
      * Take the String representing the complete forecast in JSON Format and
      * pull out the data we need to construct the Strings needed for the wireframes.
      * <p/>
      * Fortunately parsing is easy:  constructor takes the JSON string and converts it
      * into an Object hierarchy for us.
      */
-    private String[] getWeatherDataFromJson(String forecastJsonStr, int numDays,
+    private void getWeatherDataFromJson(String forecastJsonStr, int numDays,
                                             String locationSetting)
             throws JSONException {
 
@@ -344,9 +279,6 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
             cVVector.add(weatherValues);
 
-            String highAndLow = formatHighLows(high, low);
-            String day = getReadableDateString(dateTime);
-            resultStrs[i] = day + " - " + description + " - " + highAndLow;
         }
 
         if(cVVector.size() > 0) {
@@ -354,7 +286,5 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
             cVVector.toArray(weatherValuesArray);
             mContext.getContentResolver().bulkInsert(WeatherEntry.CONTENT_URI, weatherValuesArray);
         }
-        
-        return resultStrs;
     }
 }

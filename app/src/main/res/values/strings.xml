@@ -22,6 +22,8 @@
     <string name="pref_temperature_unit_value_imperial" translatable="false">imperial</string>
     <string name="action_preferred_location">Preferred Location</string>
     <string name="action_share">Share</string>
+    <string name="forecast_separator_string">-</string>
+    <string name="forecast_temperature_separator_string">/</string>
     <string-array name="pref_temperature_units_entries">
         <item>@string/temperature_unit_metric</item>
         <item>@string/temperature_unit_imperial</item>
