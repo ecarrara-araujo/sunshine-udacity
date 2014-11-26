@@ -19,7 +19,7 @@ import eng.ecarrara.sunshine.data.WeatherContract.WeatherEntry;
 public class TestDb extends AndroidTestCase {
 
     public static final String LOG_TAG = TestDb.class.getSimpleName();
-    static final String TEST_LOCATION = "99705";
+    static final String TEST_LOCATION_NORTH_POLE = "99705";
     static final String TEST_DATE = "20141205";
 
     public void testCreateDb() throws Throwable {
@@ -105,7 +105,7 @@ public class TestDb extends AndroidTestCase {
 
     static ContentValues createNorthPoleLocationValues() {
         ContentValues locationValues = new ContentValues();
-        locationValues.put(LocationEntry.COLUMN_LOCATION_SETTING, TEST_LOCATION);
+        locationValues.put(LocationEntry.COLUMN_LOCATION_SETTING, TEST_LOCATION_NORTH_POLE);
         locationValues.put(LocationEntry.COLUMN_CITY_NAME, "North Pole");
         locationValues.put(LocationEntry.COLUMN_COORD_LAT, 64.7488);
         locationValues.put(LocationEntry.COLUMN_COORD_LONG, -147.353);

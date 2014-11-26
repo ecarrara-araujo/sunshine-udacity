@@ -6,13 +6,15 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteQueryBuilder;
-import android.location.Location;
 import android.net.Uri;
+import android.util.Log;
 
 /**
  * Created by ecarrara on 24/11/2014.
  */
 public class WeatherProvider extends ContentProvider {
+
+    private static final String LOG_TAG = WeatherProvider.class.getSimpleName();
 
     public static final int WEATHER = 100;
     public static final int WEATHER_WITH_LOCATION = 101;
@@ -169,7 +171,26 @@ public class WeatherProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        int uriMatched = sUriMatcher.match(uri);
+        int rowsAffected = 0;
+        switch(uriMatched) {
+            case WEATHER:
+                rowsAffected = mDatabaseOpenHelper.getWritableDatabase().delete(
+                        WeatherContract.WeatherEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case LOCATION:
+                rowsAffected = mDatabaseOpenHelper.getWritableDatabase().delete(
+                        WeatherContract.LocationEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown URI: " + uri);
+        }
+
+        Log.d(LOG_TAG, "Number of rows deleted: " + rowsAffected);
+        if(null == selection || 0 != rowsAffected) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsAffected;
     }
 
     @Override
