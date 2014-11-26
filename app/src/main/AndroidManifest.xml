@@ -36,7 +36,9 @@
         </activity>
         <provider
             android:authorities="eng.ecarrara.sunshine.data"
-            android:name=".data.WeatherProvider" />
+            android:name=".data.WeatherProvider"
+            android:enabled="true"
+            android:exported="false"/>
     </application>
 
 </manifest>
