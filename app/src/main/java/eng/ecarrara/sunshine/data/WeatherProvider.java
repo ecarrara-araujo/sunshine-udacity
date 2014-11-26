@@ -195,7 +195,24 @@ public class WeatherProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        int uriMatched = sUriMatcher.match(uri);
+        int rowsAffected = 0;
+        switch(uriMatched) {
+            case WEATHER:
+                rowsAffected = mDatabaseOpenHelper.getWritableDatabase().update(
+                        WeatherContract.WeatherEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case LOCATION:
+                rowsAffected = mDatabaseOpenHelper.getWritableDatabase().update(
+                        WeatherContract.LocationEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown URI: " + uri);
+        }
+
+        Log.d(LOG_TAG, "Number of rows updated: " + rowsAffected);
+        getContext().getContentResolver().notifyChange(uri, null);
+        return rowsAffected;
     }
 
     private Cursor getWeatherByLocationSetting(Uri uri, String[] projection, String sortOrder) {

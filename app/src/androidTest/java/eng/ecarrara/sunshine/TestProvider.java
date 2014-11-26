@@ -143,6 +143,41 @@ public class TestProvider extends AndroidTestCase {
         cursor.close();
     }
 
+    public void testUpdateLocation() {
+        // Create a new map of values, where column names are the keys
+        ContentValues values = TestDb.createNorthPoleLocationValues();
+
+        Uri locationUri = mContext.getContentResolver().
+                insert(LocationEntry.CONTENT_URI, values);
+        long locationRowId = ContentUris.parseId(locationUri);
+
+        // Verify we got a row back.
+        assertTrue(locationRowId != -1);
+        Log.d(LOG_TAG, "New row id: " + locationRowId);
+
+        ContentValues updatedValues = new ContentValues(values);
+        updatedValues.put(LocationEntry._ID, locationRowId);
+        updatedValues.put(LocationEntry.COLUMN_CITY_NAME, "Santa's Village");
+
+        int count = mContext.getContentResolver().update(
+                LocationEntry.CONTENT_URI, updatedValues, LocationEntry._ID + "= ?",
+                new String[] { Long.toString(locationRowId)});
+
+        assertEquals(count, 1);
+
+        // A cursor is your primary interface to the query results.
+        Cursor cursor = mContext.getContentResolver().query(
+                LocationEntry.buildLocationUri(locationRowId),
+                null,
+                null, // Columns for the "where" clause
+                null, // Values for the "where" clause
+                null // sort order
+        );
+
+        TestDb.validateCursor(cursor, updatedValues);
+        cursor.close();
+    }
+
     public void testGetType() throws Throwable {
         String type = mContext.getContentResolver().getType(WeatherEntry.CONTENT_URI);
         assertEquals(WeatherEntry.CONTENT_TYPE, type);
@@ -211,6 +246,55 @@ public class TestProvider extends AndroidTestCase {
         Uri weatherInsertUri = mContext.getContentResolver()
                 .insert(WeatherEntry.CONTENT_URI, kalamazooWeatherValues);
         assertTrue(weatherInsertUri != null);
+    }
+
+    public void testUpdateAndReadWeather() {
+        insertKalamazooData();
+        String newDescription = "Cats and Frogs (don't warn the tadpoles!)";
+
+        // Make an update to one value.
+        ContentValues kalamazooUpdate = new ContentValues();
+        kalamazooUpdate.put(WeatherEntry.COLUMN_SHORT_DESC, newDescription);
+
+        mContext.getContentResolver().update(
+                WeatherEntry.CONTENT_URI, kalamazooUpdate, null, null);
+
+        // A cursor is your primary interface to the query results.
+        Cursor weatherCursor = mContext.getContentResolver().query(
+                WeatherEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null
+        );
+
+        // Make the same update to the full ContentValues for comparison.
+        ContentValues kalamazooAltered = createKalamazooWeatherValues(locationRowId);
+        kalamazooAltered.put(WeatherEntry.COLUMN_SHORT_DESC, newDescription);
+
+        TestDb.validateCursor(weatherCursor, kalamazooAltered);
+    }
+
+    public void testRemoveHumidityAndReadWeather() {
+        insertKalamazooData();
+
+        mContext.getContentResolver().delete(WeatherEntry.CONTENT_URI,
+                WeatherEntry.COLUMN_HUMIDITY + " = " + locationRowId, null);
+
+        // A cursor is your primary interface to the query results.
+        Cursor weatherCursor = mContext.getContentResolver().query(
+                WeatherEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null
+        );
+
+        // Make the same update to the full ContentValues for comparison.
+        ContentValues kalamazooAltered = createKalamazooWeatherValues(locationRowId);
+        kalamazooAltered.remove(WeatherEntry.COLUMN_HUMIDITY);
+
+        TestDb.validateCursor(weatherCursor, kalamazooAltered);
     }
 
     // The target api annotation is needed for the call to keySet -- we wouldn't want
