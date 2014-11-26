@@ -147,30 +147,12 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         weatherListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SimpleCursorAdapter adapter = (SimpleCursorAdapter) parent.getAdapter();
-                Cursor forecastCursor = adapter.getCursor();
-                String forecast = "";
-
-                if(forecastCursor.moveToPosition(position)) {
-                    boolean isMetric = Utility.isMetric(getActivity());
-                    String dateString = Utility.formatDate(
-                            forecastCursor.getString(COL_WEATHER_DATE));
-                    String forecastString = forecastCursor.getString(COL_WEATHER_DESC);
-                    String tempHigh = Utility.formatTemperature(
-                            forecastCursor.getDouble(COL_WEATHER_MAX_TEMP), isMetric);
-                    String tempLow = Utility.formatTemperature(
-                            forecastCursor.getDouble(COL_WEATHER_MIN_TEMP), isMetric);
-                    forecast = String.format("%s - %s - %s/%s",
-                            dateString, forecastString, tempHigh, tempLow);
-
-                } else {
-                    Log.d(LOG_TAG, "Ops cannot retrieve data from cursor.");
-                    return;
+                Cursor cursor = mForecastDataAdapter.getCursor();
+                if (cursor != null && cursor.moveToPosition(position)) {
+                    Intent intent = new Intent(getActivity(), DetailActivity.class)
+                            .putExtra(DetailActivity.DATE_KEY, cursor.getString(COL_WEATHER_DATE));
+                    startActivity(intent);
                 }
-
-                Intent detailsIntent = new Intent(getActivity(), DetailActivity.class);
-                detailsIntent.putExtra(Intent.EXTRA_TEXT, forecast);
-                startActivity(detailsIntent);
             }
         });
 
