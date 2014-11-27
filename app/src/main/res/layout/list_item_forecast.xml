@@ -4,45 +4,49 @@
     android:layout_height="wrap_content"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:padding="16dp">
 
-    <!-- day -->
-    <TextView
-        android:id="@+id/list_item_date_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
+    <ImageView android:id="@+id/list_item_weather_icon"
+        android:src="@drawable/ic_launcher"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/forecast_separator_string"/>
+        android:layout_centerVertical="true" />
 
-    <!-- description -->
-    <TextView
-        android:id="@+id/list_item_forecast_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:paddingLeft="16dp" >
 
-    <TextView
+        <TextView android:id="@+id/list_item_date_textview"
+            android:text="Tomorrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView android:id="@+id/list_item_forecast_textview"
+            android:text="Clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/forecast_separator_string"/>
+        android:orientation="vertical" >
 
-    <!-- high -->
-    <TextView
-        android:id="@+id/list_item_high_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <TextView android:id="@+id/list_item_high_textview"
+            android:text="50"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/forecast_temperature_separator_string"/>
+        <TextView android:id="@+id/list_item_low_textview"
+            android:text="8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-    <!-- low -->
-    <TextView
-        android:id="@+id/list_item_low_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    </LinearLayout>
 
 </LinearLayout>
