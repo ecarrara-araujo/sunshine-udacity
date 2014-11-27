@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -21,7 +20,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import eng.ecarrara.sunshine.data.WeatherContract;
-import eng.ecarrara.sunshine.data.WeatherContract.LocationEntry;
 import eng.ecarrara.sunshine.data.WeatherContract.WeatherEntry;
 
 /**
@@ -156,9 +154,9 @@ public class ForecastDetailFragment extends Fragment
         boolean isMetric = Utility.isMetric(getActivity());
         String dateString = Utility.formatDate(cursor.getString(COL_WEATHER_DATE));
         String weatherDescription = cursor.getString(COL_WEATHER_DESC);
-        String high = Utility.formatTemperature(
+        String high = Utility.formatTemperature(getActivity(),
                 cursor.getDouble(COL_WEATHER_MAX_TEMP), isMetric);
-        String min = Utility.formatTemperature(
+        String min = Utility.formatTemperature(getActivity(),
                 cursor.getDouble(COL_WEATHER_MIN_TEMP), isMetric);
 
         ((TextView) getView().findViewById(R.id.detail_date_textview)).setText(dateString);

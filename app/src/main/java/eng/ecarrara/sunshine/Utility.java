@@ -45,14 +45,14 @@ public class Utility {
         return imperialTemp;
     }
 
-    public static String formatTemperature(double temperature, boolean isMetric) {
+    public static String formatTemperature(Context context, double temperature, boolean isMetric) {
         double temp;
         if ( !isMetric ) {
             temp = convertTemperatureFromMetricToImperial(temperature);
         } else {
             temp = temperature;
         }
-        return String.format("%.0f", temp);
+        return context.getString(R.string.format_temperature, temp);
     }
 
     public static String formatDate(String dateString) {
