@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import eng.ecarrara.sunshine.data.WeatherContract;
@@ -48,6 +49,10 @@ public class ForecastDetailFragment extends Fragment
             WeatherEntry.COLUMN_MAX_TEMP,
             WeatherEntry.COLUMN_MIN_TEMP,
             WeatherEntry.COLUMN_LONG_DESC,
+            WeatherEntry.COLUMN_HUMIDITY,
+            WeatherEntry.COLUMN_WIND_SPEED,
+            WeatherEntry.COLUMN_PRESSURE,
+            WeatherEntry.COLUMN_DEGREES
     };
 
     // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
@@ -58,7 +63,20 @@ public class ForecastDetailFragment extends Fragment
     public static final int COL_WEATHER_MAX_TEMP = 3;
     public static final int COL_WEATHER_MIN_TEMP = 4;
     public static final int COL_WEATHER_LONG_DESC = 5;
-    public static final int COL_LOCATION_SETTING = 6;
+    public static final int COL_WEATHER_HUMIDITY = 6;
+    public static final int COL_WEATHER_WIND_SPEED = 7;
+    public static final int COL_WEATHER_PRESSURE = 8;
+    public static final int COL_WEATHER_DEGREES = 9;
+
+    private ImageView mIconView;
+    private TextView mDayOfWeekView;
+    private TextView mDateView;
+    private TextView mHighView;
+    private TextView mLowView;
+    private TextView mWeatherDescriptionView;
+    private TextView mHumidityView;
+    private TextView mWindSpeedView;
+    private TextView mPressureView;
 
     public ForecastDetailFragment() { }
 
@@ -76,9 +94,27 @@ public class ForecastDetailFragment extends Fragment
         }
     }
 
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+
+        mIconView = (ImageView) rootView.findViewById(R.id.detail_weather_icon);
+        mDayOfWeekView = (TextView) rootView.findViewById(R.id.detail_day_of_weeek_textview);
+        mDateView = (TextView) rootView.findViewById(R.id.detail_date_textview);
+        mHighView = (TextView) rootView.findViewById(R.id.detail_high_textview);
+        mLowView = (TextView) rootView.findViewById(R.id.detail_low_textview);
+        mWeatherDescriptionView = (TextView) rootView.findViewById(R.id.detail_forecast_textview);
+        mHumidityView = (TextView) rootView.findViewById(R.id.detail_humidity_textview);
+        mWindSpeedView = (TextView) rootView.findViewById(R.id.detail_wind_textview);
+        mPressureView = (TextView) rootView.findViewById(R.id.detail_pressure_textview);
+
+        return rootView;
     }
 
     @Override
@@ -102,12 +138,6 @@ public class ForecastDetailFragment extends Fragment
         if(mForecast != null) {
             mShareActionProvider.setShareIntent(createShareForecastIntent());
         }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_detail, container, false);
     }
 
     private Intent createShareForecastIntent() {
@@ -151,18 +181,36 @@ public class ForecastDetailFragment extends Fragment
         Log.v(LOG_TAG, "In onLoadFinished");
         if(!cursor.moveToFirst()) { return; }
 
+        String dayOfWeekString = Utility.getDayName(getActivity(),
+                cursor.getString(COL_WEATHER_DATE));
+        String dateString = Utility.getFormattedMonthDay(getActivity(),
+                cursor.getString(COL_WEATHER_DATE));
+
         boolean isMetric = Utility.isMetric(getActivity());
-        String dateString = Utility.formatDate(cursor.getString(COL_WEATHER_DATE));
-        String weatherDescription = cursor.getString(COL_WEATHER_DESC);
         String high = Utility.formatTemperature(getActivity(),
                 cursor.getDouble(COL_WEATHER_MAX_TEMP), isMetric);
         String min = Utility.formatTemperature(getActivity(),
                 cursor.getDouble(COL_WEATHER_MIN_TEMP), isMetric);
 
-        ((TextView) getView().findViewById(R.id.detail_date_textview)).setText(dateString);
-        ((TextView) getView().findViewById(R.id.detail_forecast_textview)).setText(weatherDescription);
-        ((TextView) getView().findViewById(R.id.detail_high_textview)).setText(high);
-        ((TextView) getView().findViewById(R.id.detail_low_textview)).setText(min);
+        int weatherId = cursor.getInt(ForecastFragment.COL_WEATHER_ID);
+        String weatherDescription = cursor.getString(COL_WEATHER_DESC);
+
+        String humidityString = String.format(getActivity().getString(R.string.format_humidity),
+                cursor.getFloat(COL_WEATHER_HUMIDITY));
+        String windString = Utility.getFormattedWind(getActivity(),
+                cursor.getFloat(COL_WEATHER_WIND_SPEED), cursor.getFloat(COL_WEATHER_DEGREES));
+        String pressureString = String.format(getActivity().getString(R.string.format_pressure),
+                cursor.getFloat(COL_WEATHER_PRESSURE));
+
+        mDayOfWeekView.setText(dayOfWeekString);
+        mDateView.setText(dateString);
+        mHighView.setText(high);
+        mLowView.setText(min);
+        mIconView.setImageResource(R.drawable.ic_launcher);
+        mWeatherDescriptionView.setText(weatherDescription);
+        mHumidityView.setText(humidityString);
+        mWindSpeedView.setText(windString);
+        mPressureView.setText(pressureString);
 
         // We still need this for the share intent
         mForecast = String.format("%s - %s - %s/%s", dateString, weatherDescription, high, min);
