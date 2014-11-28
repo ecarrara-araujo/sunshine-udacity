@@ -91,7 +91,10 @@ public class ForecastDetailFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        if( mLocation != null && !mLocation.equals(Utility.getPreferredLocation(getActivity()))) {
+        Bundle arguments = getArguments();
+        if( arguments != null && getArguments().containsKey(DATE_KEY)
+                && mLocation != null
+                && !mLocation.equals(Utility.getPreferredLocation(getActivity()))) {
             getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
         }
     }
@@ -121,11 +124,16 @@ public class ForecastDetailFragment extends Fragment
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        getLoaderManager().initLoader(DETAIL_LOADER, null, this);
+        super.onActivityCreated(savedInstanceState);
         if(savedInstanceState != null) {
             mLocation = savedInstanceState.getString(LOCATION_KEY);
         }
-        super.onActivityCreated(savedInstanceState);
+
+        Bundle arguments = getArguments();
+        if(arguments != null && arguments.containsKey(DATE_KEY)) {
+            getLoaderManager().initLoader(DETAIL_LOADER, null, this);
+        }
+
     }
 
     @Override
@@ -153,11 +161,7 @@ public class ForecastDetailFragment extends Fragment
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         Log.v(LOG_TAG, "In onCreateLoader");
-        Intent intent = getActivity().getIntent();
-        if (intent == null || !intent.hasExtra(DATE_KEY)) {
-            return null;
-        }
-        String forecastDate = intent.getStringExtra(DATE_KEY);
+        String forecastDate = getArguments().getString(DATE_KEY);
         mLocation = Utility.getPreferredLocation(getActivity());
 
         // Sort order:  Ascending, by date.
