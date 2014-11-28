@@ -52,7 +52,8 @@ public class ForecastDetailFragment extends Fragment
             WeatherEntry.COLUMN_HUMIDITY,
             WeatherEntry.COLUMN_WIND_SPEED,
             WeatherEntry.COLUMN_PRESSURE,
-            WeatherEntry.COLUMN_DEGREES
+            WeatherEntry.COLUMN_DEGREES,
+            WeatherEntry.COLUMN_WEATHER_ID
     };
 
     // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
@@ -67,6 +68,7 @@ public class ForecastDetailFragment extends Fragment
     public static final int COL_WEATHER_WIND_SPEED = 7;
     public static final int COL_WEATHER_PRESSURE = 8;
     public static final int COL_WEATHER_DEGREES = 9;
+    public static final int COL_WEATHER_WEATHER_ID = 10;
 
     private ImageView mIconView;
     private TextView mDayOfWeekView;
@@ -192,7 +194,9 @@ public class ForecastDetailFragment extends Fragment
         String min = Utility.formatTemperature(getActivity(),
                 cursor.getDouble(COL_WEATHER_MIN_TEMP), isMetric);
 
-        int weatherId = cursor.getInt(ForecastFragment.COL_WEATHER_ID);
+        int weatherId =
+                Utility.getArtResourceForWeatherCondition(
+                        cursor.getInt(COL_WEATHER_WEATHER_ID));
         String weatherDescription = cursor.getString(COL_WEATHER_DESC);
 
         String humidityString = String.format(getActivity().getString(R.string.format_humidity),
@@ -206,7 +210,7 @@ public class ForecastDetailFragment extends Fragment
         mDateView.setText(dateString);
         mHighView.setText(high);
         mLowView.setText(min);
-        mIconView.setImageResource(R.drawable.ic_launcher);
+        mIconView.setImageResource(weatherId);
         mWeatherDescriptionView.setText(weatherDescription);
         mHumidityView.setText(humidityString);
         mWindSpeedView.setText(windString);
