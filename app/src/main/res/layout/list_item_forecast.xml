@@ -8,7 +8,6 @@
     android:padding="16dp">
 
     <ImageView android:id="@+id/list_item_weather_icon"
-        android:src="@drawable/ic_launcher"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true" />
@@ -21,12 +20,10 @@
         android:paddingLeft="16dp" >
 
         <TextView android:id="@+id/list_item_date_textview"
-            android:text="Tomorrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView android:id="@+id/list_item_forecast_textview"
-            android:text="Clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -38,12 +35,10 @@
         android:orientation="vertical" >
 
         <TextView android:id="@+id/list_item_high_textview"
-            android:text="50"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView android:id="@+id/list_item_low_textview"
-            android:text="8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
