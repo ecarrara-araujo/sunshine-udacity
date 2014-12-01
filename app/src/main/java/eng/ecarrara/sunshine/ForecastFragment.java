@@ -45,6 +45,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private ForecastAdapter mForecastDataAdapter;
+    private boolean mUseTodayLayout;
 
     private static final int FORECAST_LOADER = 0;
     private static final String LIST_POSITION_KEY = "list_position";
@@ -117,6 +118,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mForecastDataAdapter = new ForecastAdapter(getActivity(), null, 0);
+        mForecastDataAdapter.setUseTodayLayout(mUseTodayLayout);
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
@@ -204,5 +206,12 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoaderReset(Loader loader) {
         mForecastDataAdapter.swapCursor(null);
+    }
+
+    public void setUseTodayLayout(boolean useTodayLayout) {
+        mUseTodayLayout = useTodayLayout;
+        if(mForecastDataAdapter != null) {
+            mForecastDataAdapter.setUseTodayLayout(mUseTodayLayout);
+        }
     }
 }
