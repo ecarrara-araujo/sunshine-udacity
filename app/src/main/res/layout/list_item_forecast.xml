@@ -5,6 +5,7 @@
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:gravity="center_vertical"
     android:orientation="horizontal"
+    android:background="@drawable/touch_selector"
     android:padding="16dp">
 
     <ImageView android:id="@+id/list_item_weather_icon"
