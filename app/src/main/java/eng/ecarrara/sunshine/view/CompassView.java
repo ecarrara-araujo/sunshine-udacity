@@ -8,8 +8,11 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 
 import eng.ecarrara.sunshine.R;
+import eng.ecarrara.sunshine.Utility;
 
 /**
  * Created by ecarrara on 03/12/2014.
@@ -102,7 +105,7 @@ public class CompassView extends View {
         canvas.drawBitmap(mCompassBitmap, 0, 0, mCompassPaint);
         canvas.drawBitmap(
                 mNeedleBitmap,
-                rotateBitmap(mNeedleBitmap,needlePositionWidth, needlePositionHeight),
+                rotateBitmap(mNeedleBitmap, needlePositionWidth, needlePositionHeight),
                 mNeedlePaint);
     }
 
@@ -115,6 +118,17 @@ public class CompassView extends View {
 
     public void setDegrees(float degrees) {
         mDegrees = degrees;
+        AccessibilityManager accessibilityManager =
+                (AccessibilityManager) getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
+        if (accessibilityManager.isEnabled()) {
+            sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED);
+        }
         invalidate();
+    }
+
+    @Override
+    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
+        event.getText().add(Utility.getAccessibleWindDirection(getContext(), mDegrees));
+        return true;
     }
 }

@@ -267,4 +267,28 @@ public class Utility {
         }
         return -1;
     }
+
+    public static String getAccessibleWindDirection(Context context, float degrees) {
+        int windFormat = R.string.accessible_wind_direction_format;
+        String direction = "Unknown";
+
+        if (degrees >= 337.5 || degrees < 22.5) {
+            direction = "North";
+        } else if (degrees >= 22.5 && degrees < 67.5) {
+            direction = "Northeast";
+        } else if (degrees >= 67.5 && degrees < 112.5) {
+            direction = "East";
+        } else if (degrees >= 112.5 && degrees < 157.5) {
+            direction = "Southeast";
+        } else if (degrees >= 157.5 && degrees < 202.5) {
+            direction = "South";
+        } else if (degrees >= 202.5 && degrees < 247.5) {
+            direction = "Southwest";
+        } else if (degrees >= 247.5 && degrees < 292.5) {
+            direction = "West";
+        } else if (degrees >= 292.5 || degrees < 22.5) {
+            direction = "Northwest";
+        }
+        return String.format(context.getString(windFormat), direction);
+    }
 }

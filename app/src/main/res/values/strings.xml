@@ -69,4 +69,9 @@
     <!-- Humidity format CHAR LIMIT=25]-->
     <string name="format_humidity">Humidity: <xliff:g id="humidity">%1.0f</xliff:g> %%</string>
     <string name="icon_representing_the_current_state_of_the_weather">Icon representing the current weather.</string>
+
+    <!-- Acessible Wind Direction -->
+    <string name="accessible_wind_direction_format">
+        The current wind direction is <xliff:g id="direction">$s</xliff:g>
+    </string>
 </resources>
