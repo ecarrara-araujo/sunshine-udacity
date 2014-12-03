@@ -40,6 +40,8 @@
             android:name=".data.WeatherProvider"
             android:enabled="true"
             android:exported="false"/>
+        <service android:authorities="eng.ecarrara.sunshine"
+            android:name=".service.SunshineService" />
     </application>
 
 </manifest>

@@ -4,6 +4,7 @@ package eng.ecarrara.sunshine;
  * Created by ecarrara on 7/30/2014.
  */
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import java.util.Date;
 import eng.ecarrara.sunshine.data.WeatherContract;
 import eng.ecarrara.sunshine.data.WeatherContract.LocationEntry;
 import eng.ecarrara.sunshine.data.WeatherContract.WeatherEntry;
+import eng.ecarrara.sunshine.service.SunshineService;
 
 /**
  * A fragment containing the weather forecast view.
@@ -149,8 +151,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void updateWeather() {
-        String location = Utility.getPreferredLocation(getActivity());
-        new FetchWeatherTask(getActivity()).execute(location);
+        Intent sunshineService  = new Intent(getActivity(), SunshineService.class);
+        sunshineService.putExtra(SunshineService.LOCATION_QUERY_EXTRA,
+                Utility.getPreferredLocation(getActivity()));
+        getActivity().startService(sunshineService);
     }
 
     @Override
