@@ -74,4 +74,8 @@
     <string name="accessible_wind_direction_format">
         The current wind direction is <xliff:g id="direction">$s</xliff:g>
     </string>
+
+    <!-- System Strings -->
+    <string name="sync_account_type">sunshine.ecarrara.eng</string>
+    <string name="content_authority">eng.ecarrara.sunshine</string>
 </resources>
