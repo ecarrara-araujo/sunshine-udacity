@@ -221,10 +221,10 @@ public class WeatherProvider extends ContentProvider {
     public int bulkInsert(Uri uri, ContentValues[] values) {
         final SQLiteDatabase db = mDatabaseOpenHelper.getWritableDatabase();
         final int uriMatched = sUriMatcher.match(uri);
+        int returnCount = 0;
         switch(uriMatched) {
             case WEATHER:
                 db.beginTransaction();
-                int returnCount = 0;
                 try {
                     for (ContentValues value : values) {
                         long _id = db.insert(WeatherContract.WeatherEntry.TABLE_NAME, null, value);
@@ -237,11 +237,11 @@ public class WeatherProvider extends ContentProvider {
                     db.endTransaction();
                 }
                 getContext().getContentResolver().notifyChange(uri, null);
-                return returnCount;
+                break;
             default:
-                return super.bulkInsert(uri, values);
+                returnCount =  super.bulkInsert(uri, values);
         }
-
+        return returnCount;
     }
 
     private Cursor getWeatherByLocationSetting(Uri uri, String[] projection, String sortOrder) {
