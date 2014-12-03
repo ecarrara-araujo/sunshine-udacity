@@ -72,5 +72,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <eng.ecarrara.sunshine.view.CompassView
+            android:id="@+id/wind_compass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal" />
+
     </LinearLayout>
 </ScrollView>

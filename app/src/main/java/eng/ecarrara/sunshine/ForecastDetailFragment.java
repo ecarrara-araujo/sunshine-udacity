@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import eng.ecarrara.sunshine.data.WeatherContract;
 import eng.ecarrara.sunshine.data.WeatherContract.WeatherEntry;
+import eng.ecarrara.sunshine.view.CompassView;
 
 /**
  * Created by ecarrara on 26/11/2014.
@@ -79,6 +80,7 @@ public class ForecastDetailFragment extends Fragment
     private TextView mHumidityView;
     private TextView mWindSpeedView;
     private TextView mPressureView;
+    private CompassView mCompassView;
 
     public ForecastDetailFragment() { }
 
@@ -118,6 +120,7 @@ public class ForecastDetailFragment extends Fragment
         mHumidityView = (TextView) rootView.findViewById(R.id.detail_humidity_textview);
         mWindSpeedView = (TextView) rootView.findViewById(R.id.detail_wind_textview);
         mPressureView = (TextView) rootView.findViewById(R.id.detail_pressure_textview);
+        mCompassView = (CompassView) rootView.findViewById(R.id.wind_compass);
 
         return rootView;
     }
@@ -205,10 +208,12 @@ public class ForecastDetailFragment extends Fragment
 
         String humidityString = String.format(getActivity().getString(R.string.format_humidity),
                 cursor.getFloat(COL_WEATHER_HUMIDITY));
-        String windString = Utility.getFormattedWind(getActivity(),
-                cursor.getFloat(COL_WEATHER_WIND_SPEED), cursor.getFloat(COL_WEATHER_DEGREES));
         String pressureString = String.format(getActivity().getString(R.string.format_pressure),
                 cursor.getFloat(COL_WEATHER_PRESSURE));
+
+        final float windDirection = cursor.getFloat(COL_WEATHER_DEGREES);
+        String windString = Utility.getFormattedWind(getActivity(),
+                cursor.getFloat(COL_WEATHER_WIND_SPEED), windDirection);
 
         mDayOfWeekView.setText(dayOfWeekString);
         mDateView.setText(dateString);
@@ -219,6 +224,7 @@ public class ForecastDetailFragment extends Fragment
         mHumidityView.setText(humidityString);
         mWindSpeedView.setText(windString);
         mPressureView.setText(pressureString);
+        mCompassView.setDegrees(windDirection);
 
         // We still need this for the share intent
         mForecast = String.format("%s - %s - %s/%s", dateString, weatherDescription, high, min);
