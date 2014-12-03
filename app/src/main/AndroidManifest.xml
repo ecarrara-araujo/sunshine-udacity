@@ -46,9 +46,6 @@
             android:name=".data.WeatherProvider"
             android:enabled="true"
             android:exported="false"/>
-        <service android:authorities="eng.ecarrara.sunshine"
-            android:name=".service.SunshineService" />
-        <receiver android:name=".service.SunshineService$AlarmReceiver" />
         <service android:name=".sync.SunshineAuthenticatorService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
