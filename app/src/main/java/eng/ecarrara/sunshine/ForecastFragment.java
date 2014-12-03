@@ -4,6 +4,7 @@ package eng.ecarrara.sunshine;
  * Created by ecarrara on 7/30/2014.
  */
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -70,7 +71,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             WeatherEntry.COLUMN_MIN_TEMP,
             WeatherEntry.COLUMN_LONG_DESC,
             WeatherEntry.COLUMN_WEATHER_ID,
-            LocationEntry.COLUMN_LOCATION_SETTING
+            LocationEntry.COLUMN_LOCATION_SETTING,
+            LocationEntry.COLUMN_COORD_LAT,
+            LocationEntry.COLUMN_COORD_LONG
     };
 
     // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
@@ -83,6 +86,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public static final int COL_WEATHER_LONG_DESC = 5;
     public static final int COL_WEATHER_WEATHER_ID = 6;
     public static final int COL_LOCATION_SETTING = 7;
+    public static final int COL_COORD_LAT = 8;
+    public static final int COL_COORD_LONG = 9;
+
 
     public ForecastFragment() {
     }
@@ -111,7 +117,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         if (id == R.id.action_refresh) {
             updateWeather();
             return true;
+        } else if(id == R.id.action_preferred_location) {
+           openPreferredLocationInMap();
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -222,6 +231,25 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         mUseTodayLayout = useTodayLayout;
         if(mForecastDataAdapter != null) {
             mForecastDataAdapter.setUseTodayLayout(mUseTodayLayout);
+        }
+    }
+
+    private void openPreferredLocationInMap() {
+        if(null != mForecastDataAdapter) {
+            Cursor c = mForecastDataAdapter.getCursor();
+            if(null != c) {
+                c.moveToPosition(0);
+                String posLat = c.getString(COL_COORD_LAT);
+                String posLong = c.getString(COL_COORD_LONG);
+
+                Uri geoLocation = Uri.parse("geo:" + posLat + "," + posLong);
+
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW);
+                mapIntent.setData(geoLocation);
+                if(mapIntent.resolveActivity(getActivity().getPackageManager()) != null){
+                    startActivity(mapIntent);
+                }
+            }
         }
     }
 }
