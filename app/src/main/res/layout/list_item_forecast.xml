@@ -12,7 +12,8 @@
         android:layout_height="wrap_content">
         <ImageView android:id="@+id/list_item_weather_icon"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/icon_representing_the_current_state_of_the_weather"/>
     </FrameLayout>
 
 

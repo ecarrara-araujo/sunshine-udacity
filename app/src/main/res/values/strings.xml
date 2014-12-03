@@ -68,4 +68,5 @@
 
     <!-- Humidity format CHAR LIMIT=25]-->
     <string name="format_humidity">Humidity: <xliff:g id="humidity">%1.0f</xliff:g> %%</string>
+    <string name="icon_representing_the_current_state_of_the_weather">Icon representing the current weather.</string>
 </resources>
